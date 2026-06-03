@@ -1,0 +1,10 @@
+{
+  "name": "IRONnetWORK",
+  "short_name": "INW",
+  "description": "The network forged in steel",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08080e",
+  "theme_color": "#08080e",
+  "icons": []
+}

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IRONnetWORK — The Network Forged in Steel</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#08080e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#08080e;--c:#101018;--c2:#161620;--s:#12121a;--i:#141420;--or:#f59e0b;--od:rgba(245,158,11,.12);--og:rgba(245,158,11,.3);--gr:#22c55e;--gd:rgba(34,197,94,.12);--bl:#3b82f6;--rd:#ef4444;--rdd:rgba(239,68,68,.12);--pu:#a855f7;--t1:#e8e8f0;--t2:#7a7a8a;--t3:#44445a;--b:rgba(255,255,255,.05);--b2:rgba(255,255,255,.08);--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;min-height:100dvh;overflow:hidden}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative}
+
+/* Views */
+.view{display:none;flex-direction:column;flex:1;overflow:hidden}.view.on{display:flex}
+.scrl{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.scrl::-webkit-scrollbar{display:none}
+
+/* Nav */
+.bnav{height:72px;background:var(--bg);display:flex;align-items:center;justify-content:space-around;border-top:1px solid var(--b);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:8px 16px;border-radius:12px;transition:all .15s}
+.ni .nn{font-size:22px;color:var(--t3)}.ni .nl{font-size:8px;font-weight:800;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.ni.on .nn,.ni.on .nl{color:var(--or)}
+.ni .bd{position:absolute;top:2px;right:8px;width:7px;height:7px;background:var(--rd);border-radius:50%;border:2px solid var(--bg)}
+
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;flex-shrink:0}
+.logo{font-size:18px;font-weight:900;letter-spacing:1px}.logo .i{color:var(--or)}.logo .n{color:var(--t3);font-weight:300;font-size:13px}.logo .w{color:var(--t1)}
+.hdr-r{display:flex;gap:6px;align-items:center}
+.ib{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--c);border-radius:10px;cursor:pointer;font-size:15px;border:1px solid var(--b);position:relative}
+.av-s{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--c);cursor:pointer;border:2px solid var(--b2);overflow:hidden}
+.av-s img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+/* Buttons */
+.btn{display:flex;align-items:center;justify-content:center;width:100%;padding:14px;border-radius:12px;font-size:14px;font-weight:800;border:none;cursor:pointer;transition:all .15s;gap:6px;letter-spacing:.5px}
+.btn1{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000}.btn1:active{transform:scale(.97)}
+.btn2{background:transparent;color:var(--t1);border:1.5px solid var(--b2)}
+.bto{background:transparent;border:1.5px solid var(--b2);color:var(--t1);border-radius:10px}
+
+/* Input */
+.inp{background:var(--i);border:1.5px solid var(--b2);border-radius:10px;padding:12px 14px;color:var(--t1);font-size:14px;outline:none;width:100%;transition:border-color .15s;font-family:inherit}
+.inp:focus{border-color:var(--or)}
+.inp::placeholder{color:var(--t3)}
+textarea.inp{resize:none;min-height:80px;line-height:1.5}
+.lbl{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;display:block}
+
+/* Pills */
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:6px 14px;background:var(--i);border:1.5px solid var(--b2);border-radius:50px;font-size:12px;color:var(--t2);cursor:pointer;font-weight:600;transition:all .15s}
+.pill.sel{background:var(--od);border-color:var(--or);color:var(--or)}
+
+/* Cards */
+.card{background:var(--c);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;transition:all .15s}
+
+/* Section label */
+.slbl{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:2px;padding:10px 16px 6px}
+
+/* Rank */
+.rank{display:inline-flex;align-items:center;gap:2px;padding:1px 7px;border-radius:3px;font-size:8px;font-weight:800;letter-spacing:.5px}
+.rank-apprentice{background:rgba(34,197,94,.1);color:#22c55e}
+.rank-journeyman{background:rgba(59,130,246,.1);color:#3b82f6}
+.rank-foreman{background:rgba(245,158,11,.1);color:#f59e0b}
+.rank-legend{background:rgba(239,68,68,.1);color:#ef4444}
+.rank-icons{apprentice:'🟢',journeyman:'🔵',foreman:'🟡',legend:'🔴'}
+
+/* Cert */
+.cert{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:5px;font-size:10px;font-weight:700}
+.cert-active{background:var(--gd);color:var(--gr)}
+.cert-expiring{background:var(--od);color:var(--or)}
+
+/* Toast */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--c);border:1px solid var(--or);color:var(--or);padding:10px 20px;border-radius:10px;font-size:12px;font-weight:700;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* FAB */
+.fab{position:absolute;bottom:84px;right:14px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:60;box-shadow:0 4px 16px rgba(245,158,11,.3);border:none;color:#000;font-weight:900}
+
+/* Post */
+.post{margin:0 16px 10px}
+.post-hdr{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.post-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--c2);flex-shrink:0;overflow:hidden}
+.post-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.post-u{flex:1}.post-n{font-size:12px;font-weight:800;display:flex;align-items:center;gap:3px}
+.post-m{font-size:9px;color:var(--t3);display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:1px}
+.post-img{width:100%;max-height:300px;object-fit:cover}
+.post-img-placeholder{width:100%;height:200px;background:var(--s);display:flex;align-items:center;justify-content:center;font-size:48px}
+.post-body{padding:6px 12px 8px;font-size:12px;color:var(--t2);line-height:1.5}
+.post-body b{color:var(--t1)}
+.post-acts{display:flex;gap:14px;padding:4px 12px 10px}
+.pa{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;color:var(--t2);padding:3px;transition:color .15s;font-weight:600}
+.pa:active{color:var(--or)}.pa.on{color:var(--rd)}
+.ptag{background:var(--od);color:var(--or);padding:1px 5px;border-radius:3px;font-size:7px;font-weight:800}
+.ltag{background:rgba(168,85,247,.08);color:var(--pu);padding:1px 5px;border-radius:3px;font-size:7px;font-weight:800}
+
+/* Local card */
+.lc{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--b)}
+.lc:active{background:rgba(255,255,255,.02)}
+.lc-i{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--c);flex-shrink:0}
+.lc-inf{flex:1}.lc-n{font-size:13px;font-weight:800;margin-bottom:1px}.lc-d{font-size:10px;color:var(--t3)}
+.lc-s{font-size:9px;color:var(--t3);margin-top:2px}
+.lc-b{padding:5px 11px;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;border:none;flex-shrink:0}
+.lc-jn{background:var(--od);color:var(--or);border:1px solid var(--og)}.lc-jn:active{background:var(--or);color:#000}
+.lc-jd{background:var(--s);color:var(--t3);border:1px solid var(--b)}
+
+/* Message */
+.mi{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--b)}
+.mi:active{background:rgba(255,255,255,.01)}
+.mi.ur{background:rgba(245,158,11,.02)}
+.mi-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--c);flex-shrink:0;overflow:hidden}
+.mi-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.mi-cnt{flex:1;overflow:hidden}.mi-nm{font-size:12px;font-weight:800;margin-bottom:1px}.mi-pr{font-size:10px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi.ur .mi-pr{color:var(--t2);font-weight:600}
+.mi-ti{font-size:9px;color:var(--t3);flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.mi-ub{width:15px;height:15px;background:var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#000}
+
+/* Chat */
+.chat-hdr{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--b);flex-shrink:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:6px}
+.msg-bub{max-width:78%;padding:8px 12px;border-radius:12px;font-size:12px;line-height:1.5;word-break:break-word}
+.msg-mine{background:var(--or);color:#000;align-self:flex-end;border-bottom-right-radius:4px;font-weight:600}
+.msg-other{background:var(--c2);color:var(--t1);align-self:flex-start;border-bottom-left-radius:4px}
+.msg-time{font-size:8px;color:var(--t3);margin-top:2px}
+.chat-input{display:flex;gap:6px;padding:8px 12px;border-top:1px solid var(--b);flex-shrink:0;background:var(--bg)}
+.chat-input .inp{flex:1;padding:10px 12px;font-size:13px}
+.chat-input button{width:40px;height:40px;border-radius:10px;background:var(--or);border:none;color:#000;font-size:16px;font-weight:900;cursor:pointer;flex-shrink:0}
+
+/* Profile */
+.pf-cov{height:100px;background:linear-gradient(135deg,#100e18,#1a1428,#100e18);display:flex;align-items:flex-end;justify-content:center;position:relative}
+.pf-av{width:76px;height:76px;border-radius:50%;border:4px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--c);position:relative;z-index:2;margin-bottom:-34px;overflow:hidden}
+.pf-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pf-info{text-align:center;padding:40px 16px 6px}
+.pf-info h2{font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:4px}
+.pf-tr{color:var(--or);font-size:12px;font-weight:700;margin:2px 0}
+.pf-lo{font-size:10px;color:var(--t3)}
+.pf-stats{display:flex;justify-content:center;gap:18px;padding:8px 16px}
+.pf-s{text-align:center}.pf-s .pn{font-size:16px;font-weight:900}.pf-s .pl{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+
+/* Vouch items */
+.vi{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--c);border-radius:8px;border:1px solid var(--b);margin-bottom:4px}
+.vi-i{font-size:14px}.vi-t{flex:1;font-size:10px;font-weight:700;color:var(--t2)}.vi-c{font-size:11px;font-weight:900;color:var(--or)}
+
+/* Compose overlay */
+.compose{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:100;display:none;flex-direction:column}
+.compose.on{display:flex}
+
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:var(--t3)}
+.empty .ei{font-size:40px;margin-bottom:8px}.empty .et{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--t2)}.empty .es{font-size:12px}
+
+/* Loading */
+.loading{text-align:center;padding:30px;color:var(--t3);font-size:12px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════ AUTH VIEW ══════ -->
+  <div class="view on" id="v-auth">
+    <div class="scrl">
+      <div style="padding:60px 24px 20px;text-align:center">
+        <div style="font-size:36px;font-weight:900;letter-spacing:2px;margin-bottom:4px"><span class="i" style="color:var(--or)">IRON</span><span class="n" style="color:var(--t3);font-weight:300;font-size:24px">net</span><span class="w">WORK</span></div>
+        <div style="font-size:11px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-bottom:32px">The network forged in steel</div>
+      </div>
+
+      <!-- Login Form -->
+      <div id="auth-login" style="padding:0 24px">
+        <div style="margin-bottom:12px"><label class="lbl">📱 Phone</label><input class="inp" id="l-phone" placeholder="+1 (555) 123-4567"></div>
+        <div style="margin-bottom:16px"><label class="lbl">🔒 Password</label><input class="inp" id="l-pass" type="password" placeholder="Your password"></div>
+        <button class="btn btn1" onclick="doLogin()">LOG IN</button>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--t3)">No account? <span style="color:var(--or);font-weight:700;cursor:pointer" onclick="showSignup()">Forge your card →</span></div>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="auth-signup" style="padding:0 24px;display:none">
+        <div style="margin-bottom:10px"><label class="lbl">📱 Phone</label><input class="inp" id="s-phone" placeholder="+1 (555) 123-4567"></div>
+        <div style="margin-bottom:10px"><label class="lbl">👤 Name</label><input class="inp" id="s-name" placeholder="Your name"></div>
+        <div style="margin-bottom:10px"><label class="lbl">🔒 Password</label><input class="inp" id="s-pass" type="password" placeholder="Pick a password"></div>
+        <div style="margin-bottom:10px">
+          <label class="lbl">⚒️ Your Trade</label>
+          <div class="pills" id="s-trades">
+            <span class="pill" onclick="pickTrade(this)">⚡ Electrician</span>
+            <span class="pill" onclick="pickTrade(this)">🔩 Ironworker</span>
+            <span class="pill" onclick="pickTrade(this)">🔧 Plumber</span>
+            <span class="pill" onclick="pickTrade(this)">🪚 Carpenter</span>
+            <span class="pill" onclick="pickTrade(this)">🔥 Welder</span>
+            <span class="pill" onclick="pickTrade(this)">🏗️ Operator</span>
+            <span class="pill" onclick="pickTrade(this)">❄️ HVAC</span>
+            <span class="pill" onclick="pickTrade(this)">🧱 Mason</span>
+          </div>
+        </div>
+        <div style="margin-bottom:10px"><label class="lbl">📍 Location</label><input class="inp" id="s-loc" placeholder="City, State"></div>
+        <div style="margin-bottom:14px">
+          <label class="lbl">⏱️ Years In</label>
+          <select class="inp" id="s-years"><option value="">Select...</option><option>< 1 yr</option><option>1-3 yrs</option><option>3-5 yrs</option><option>5-10 yrs</option><option>10-20 yrs</option><option>20+ yrs</option></select>
+        </div>
+        <button class="btn btn1" onclick="doSignup()">FORGE MY CARD →</button>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--t3)">Have an account? <span style="color:var(--or);font-weight:700;cursor:pointer" onclick="showLogin()">Log in →</span></div>
+      </div>
+      <div style="height:40px"></div>
+    </div>
+  </div>
+
+  <!-- ══════ THE YARD ══════ -->
+  <div class="view" id="v-yard">
+    <div class="hdr">
+      <div class="logo"><span class="i">IRON</span><span class="n">net</span><span class="w">WORK</span></div>
+      <div class="hdr-r">
+        <div class="ib" onclick="nav('msgs')">💬</div>
+        <div class="av-s" id="yard-av" onclick="nav('profile')"></div>
+      </div>
+    </div>
+    <div class="scrl" id="yard-feed"><div class="loading">Loading The Yard...</div></div>
+    <button class="fab" onclick="openCompose()">+</button>
+    <div class="bnav">
+      <div class="ni on" onclick="nav('yard')"><span class="nn">🏠</span><span class="nl">The Yard</span></div>
+      <div class="ni" onclick="nav('locals')"><span class="nn">⚒️</span><span class="nl">Locals</span></div>
+      <div class="ni" onclick="nav('msgs')"><span class="nn">💬</span><span class="nl">Messages</span></div>
+      <div class="ni" onclick="nav('profile')"><span class="nn">👤</span><span class="nl">My Card</span></div>
+    </div>
+  </div>
+
+  <!-- ══════ LOCALS ══════ -->
+  <div class="view" id="v-locals">
+    <div class="hdr"><div class="logo">⚒️ <span class="i" style="color:var(--or)">Locals</span></div></div>
+    <div class="scrl" id="locals-list"><div class="loading">Loading Locals...</div></div>
+    <div class="bnav">
+      <div class="ni" onclick="nav('yard')"><span class="nn">🏠</span><span class="nl">The Yard</span></div>
+      <div class="ni on" onclick="nav('locals')"><span class="nn">⚒️</span><span class="nl">Locals</span></div>
+      <div class="ni" onclick="nav('msgs')"><span class="nn">💬</span><span class="nl">Messages</span></div>
+      <div class="ni" onclick="nav('profile')"><span class="nn">👤</span><span class="nl">My Card</span></div>
+    </div>
+  </div>
+
+  <!-- ══════ LOCAL DETAIL ══════ -->
+  <div class="view" id="v-local-detail">
+    <div class="hdr"><div style="cursor:pointer;font-size:14px" onclick="nav('locals')">← Back</div><div class="logo" id="ld-title"></div><div></div></div>
+    <div class="scrl" id="ld-feed"><div class="loading">Loading...</div></div>
+    <button class="fab" onclick="openCompose()">+</button>
+    <div class="bnav">
+      <div class="ni" onclick="nav('yard')"><span class="nn">🏠</span><span class="nl">The Yard</span></div>
+      <div class="ni on" onclick="nav('locals')"><span class="nn">⚒️</span><span class="nl">Locals</span></div>
+      <div class="ni" onclick="nav('msgs')"><span class="nn">💬</span><span class="nl">Messages</span></div>
+      <div class="ni" onclick="nav('profile')"><span class="nn">👤</span><span class="nl">My Card</span></div>
+    </div>
+  </div>
+
+  <!-- ══════ MESSAGES ══════ -->
+  <div class="view" id="v-msgs">
+    <div class="hdr"><div class="logo">💬 Messages</div></div>
+    <div class="scrl" id="msgs-list"><div class="loading">Loading messages...</div></div>
+    <div class="bnav">
+      <div class="ni" onclick="nav('yard')"><span class="nn">🏠</span><span class="nl">The Yard</span></div>
+      <div class="ni" onclick="nav('locals')"><span class="nn">⚒️</span><span class="nl">Locals</span></div>
+      <div class="ni on" onclick="nav('msgs')"><span class="nn">💬</span><span class="nl">Messages</span></div>
+      <div class="ni" onclick="nav('profile')"><span class="nn">👤</span><span class="nl">My Card</span></div>
+    </div>
+  </div>
+
+  <!-- ══════ CHAT ══════ -->
+  <div class="view" id="v-chat">
+    <div class="chat-hdr"><div style="cursor:pointer;font-size:14px" onclick="nav('msgs')">←</div><div id="chat-name" style="font-weight:800;font-size:14px"></div></div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-input"><input class="inp" id="chat-inp" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()"><button onclick="sendMsg()">→</button></div>
+  </div>
+
+  <!-- ══════ PROFILE ══════ -->
+  <div class="view" id="v-profile">
+    <div class="hdr"><div style="cursor:pointer;font-size:14px" onclick="nav('yard')">← The Yard</div></div>
+    <div class="scrl" id="profile-content"></div>
+    <div class="bnav">
+      <div class="ni" onclick="nav('yard')"><span class="nn">🏠</span><span class="nl">The Yard</span></div>
+      <div class="ni" onclick="nav('locals')"><span class="nn">⚒️</span><span class="nl">Locals</span></div>
+      <div class="ni" onclick="nav('msgs')"><span class="nn">💬</span><span class="nl">Messages</span></div>
+      <div class="ni on" onclick="nav('profile')"><span class="nn">👤</span><span class="nl">My Card</span></div>
+    </div>
+  </div>
+
+  <!-- ══════ OTHER USER PROFILE ══════ -->
+  <div class="view" id="v-user">
+    <div class="hdr"><div style="cursor:pointer;font-size:14px" id="user-back" onclick="history.back()">← Back</div></div>
+    <div class="scrl" id="user-content"></div>
+  </div>
+
+  <!-- ══════ COMPOSE OVERLAY ══════ -->
+  <div class="compose" id="compose">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--b)">
+      <div style="font-size:13px;cursor:pointer;color:var(--t2);font-weight:700" onclick="closeCompose()">Cancel</div>
+      <div style="font-size:15px;font-weight:900">Drop a Post</div>
+      <button style="padding:6px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;border:none;border-radius:50px;font-size:12px;font-weight:900;cursor:pointer" onclick="submitPost()">DROP 🔥</button>
+    </div>
+    <div style="padding:12px 16px;flex:1;overflow-y:auto">
+      <div style="margin-bottom:10px">
+        <label class="lbl">Post to</label>
+        <select class="inp" id="c-local"></select>
+      </div>
+      <textarea class="inp" id="c-text" placeholder="What's happening on site? Drop your work, ask a question..."></textarea>
+      <div style="margin-top:10px">
+        <label class="lbl">📸 Photo (optional)</label>
+        <input type="file" id="c-img" accept="image/*" style="font-size:12px;color:var(--t2)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let TOKEN = localStorage.getItem('inw_token') || '';
+let ME = null;
+let currentLocal = null;
+let chatUserId = null;
+const RANK_ICONS = {apprentice:'🟢',journeyman:'🔵',foreman:'🟡',legend:'🔴'};
+const RANK_NAMES = {apprentice:'Apprentice',journeyman:'Journeyman',foreman:'Foreman',legend:'Legend'};
+const TRADE_EMOJIS = {'Electrician':'⚡','Ironworker':'🔩','Plumber':'🔧','Carpenter':'🪚','Welder':'🔥','Operator':'🏗️','HVAC':'❄️','Mason':'🧱'};
+
+// ═══════════════════════════════════════
+// API HELPER
+// ═══════════════════════════════════════
+async function api(url, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(TOKEN ? { 'x-token': TOKEN } : {}), ...opts.headers };
+  if (opts.body instanceof FormData) { delete headers['Content-Type']; }
+  const res = await fetch(url, { ...opts, headers: opts.body instanceof FormData ? { 'x-token': TOKEN } : headers,
+    body: opts.body instanceof FormData ? opts.body : opts.body ? JSON.stringify(opts.body) : undefined });
+  return res.json();
+}
+
+// ═══════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════
+function showSignup() { document.getElementById('auth-login').style.display = 'none'; document.getElementById('auth-signup').style.display = 'block'; }
+function showLogin() { document.getElementById('auth-signup').style.display = 'none'; document.getElementById('auth-login').style.display = 'block'; }
+
+let selectedTrade = '';
+function pickTrade(el) { document.querySelectorAll('#s-trades .pill').forEach(p => p.classList.remove('sel')); el.classList.add('sel'); selectedTrade = el.textContent.trim().replace(/^[^\s]+\s/, ''); }
+
+async function doSignup() {
+  const d = { phone: document.getElementById('s-phone').value, name: document.getElementById('s-name').value,
+    password: document.getElementById('s-pass').value, trade: selectedTrade,
+    location: document.getElementById('s-loc').value, years: document.getElementById('s-years').value };
+  if (!d.phone || !d.name || !d.trade || !d.password) return toast('Fill in all fields');
+  const r = await api('/api/signup', { method: 'POST', body: d });
+  if (r.error) return toast(r.error);
+  TOKEN = r.token; localStorage.setItem('inw_token', TOKEN); ME = r.user;
+  toast('⚒️ Welcome to IRONnetWORK, ' + ME.name.split(' ')[0] + '!');
+  initApp();
+}
+
+async function doLogin() {
+  const d = { phone: document.getElementById('l-phone').value, password: document.getElementById('l-pass').value };
+  if (!d.phone || !d.password) return toast('Enter phone and password');
+  const r = await api('/api/login', { method: 'POST', body: d });
+  if (r.error) return toast(r.error);
+  TOKEN = r.token; localStorage.setItem('inw_token', TOKEN); ME = r.user;
+  toast('⚒️ Welcome back, ' + ME.name.split(' ')[0]);
+  initApp();
+}
+
+function logout() { TOKEN = ''; ME = null; localStorage.removeItem('inw_token'); nav('auth'); }
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function nav(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-' + view)?.classList.add('on');
+  if (view === 'yard') loadYard();
+  if (view === 'locals') loadLocals();
+  if (view === 'msgs') loadConversations();
+  if (view === 'profile') loadProfile();
+}
+
+// ═══════════════════════════════════════
+// THE YARD
+// ═══════════════════════════════════════
+async function loadYard() {
+  const yardAv = document.getElementById('yard-av');
+  yardAv.innerHTML = ME.avatar ? `<img src="${ME.avatar}">` : (TRADE_EMOJIS[ME.trade] || '⚒️');
+  const posts = await api('/api/posts');
+  const el = document.getElementById('yard-feed');
+  if (!posts.length) { el.innerHTML = '<div class="empty"><div class="ei">🏗️</div><div class="et">The Yard is empty</div><div class="es">Be the first to drop a post. Show your crew what you\'re working on.</div></div>'; return; }
+  el.innerHTML = posts.map(p => renderPost(p)).join('');
+}
+
+function renderPost(p) {
+  const emoji = TRADE_EMOJIS[p.user_trade] || '⚒️';
+  const ri = RANK_ICONS[p.user_rank] || '🟢';
+  const rn = RANK_NAMES[p.user_rank] || 'Apprentice';
+  const av = p.user_avatar ? `<img src="${p.user_avatar}">` : emoji;
+  const img = p.image ? `<img class="post-img" src="${p.image}" onerror="this.style.display='none'">` : '';
+  const localTag = p.local_name ? `<span class="ltag">${p.local_emoji||'⚒️'} ${p.local_name}</span>` : '';
+  const ago = timeAgo(p.created_at);
+  const propped = p.user_propped ? 'on' : '';
+  return `<div class="post card">
+    <div class="post-hdr">
+      <div class="post-av" onclick="viewUser('${p.user_id}')">${av}</div>
+      <div class="post-u">
+        <div class="post-n" onclick="viewUser('${p.user_id}')">${p.user_name} <span class="rank rank-${p.user_rank}">${ri} ${rn}</span></div>
+        <div class="post-m"><span class="ptag">${emoji} ${p.user_trade}</span> ${localTag} <span>· ${ago}</span></div>
+      </div>
+    </div>
+    ${img}
+    <div class="post-body">${p.content}</div>
+    <div class="post-acts">
+      <div class="pa ${propped}" onclick="toggleProps('${p.id}',this)"><span>${p.user_propped?'🔥':'🤍'}</span> <span>${p.props_count} props</span></div>
+      <div class="pa"><span>💬</span></div>
+      ${p.user_id===ME.id?`<div class="pa" onclick="deletePost('${p.id}')" style="margin-left:auto;font-size:10px;color:var(--t3)">🗑️</div>`:''}
+    </div>
+  </div>`;
+}
+
+async function toggleProps(postId, el) {
+  const r = await api(`/api/posts/${postId}/props`, { method: 'POST' });
+  if (el.closest('#yard-feed')) loadYard();
+  else if (el.closest('#ld-feed')) loadLocalDetail(currentLocal);
+}
+
+async function deletePost(id) {
+  await api(`/api/posts/${id}`, { method: 'DELETE' });
+  toast('🗑️ Post deleted');
+  loadYard();
+}
+
+// ═══════════════════════════════════════
+// LOCALS
+// ═══════════════════════════════════════
+async function loadLocals() {
+  const locals = await api('/api/locals');
+  const el = document.getElementById('locals-list');
+  const mine = locals.filter(l => l.joined);
+  const others = locals.filter(l => !l.joined);
+  let html = '<div class="slbl">⭐ Your Locals</div>';
+  mine.forEach(l => { html += renderLocal(l); });
+  if (others.length) {
+    html += '<div class="slbl" style="margin-top:8px">🔍 Discover</div>';
+    others.forEach(l => { html += renderLocal(l); });
+  }
+  el.innerHTML = html;
+}
+
+function renderLocal(l) {
+  const btn = l.joined
+    ? `<button class="lc-b lc-jd" onclick="event.stopPropagation()">Joined</button>`
+    : `<button class="lc-b lc-jn" onclick="event.stopPropagation();joinLocal('${l.id}',this)">Join</button>`;
+  return `<div class="lc" onclick="openLocal('${l.id}','${l.emoji} ${l.name}')">
+    <div class="lc-i">${l.emoji}</div>
+    <div class="lc-inf"><div class="lc-n">${l.emoji} ${l.name}</div><div class="lc-d">${l.description}</div><div class="lc-s">👥 ${l.members} members</div></div>
+    ${btn}
+  </div>`;
+}
+
+async function joinLocal(id, btn) {
+  await api(`/api/locals/${id}/join`, { method: 'POST' });
+  btn.textContent = 'Joined'; btn.className = 'lc-b lc-jd';
+  toast('⚒️ You\'re in.');
+}
+
+async function openLocal(id, title) {
+  currentLocal = id;
+  document.getElementById('ld-title').innerHTML = title;
+  nav('local-detail');
+  loadLocalDetail(id);
+}
+
+async function loadLocalDetail(id) {
+  const posts = await api('/api/posts?local=' + id);
+  const el = document.getElementById('ld-feed');
+  if (!posts.length) { el.innerHTML = '<div class="empty"><div class="ei">📸</div><div class="et">No drops yet</div><div class="es">Be the first to drop a post in this Local.</div></div>'; return; }
+  el.innerHTML = posts.map(p => renderPost(p)).join('');
+}
+
+// ═══════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════
+async function loadConversations() {
+  const convos = await api('/api/messages/conversations');
+  const el = document.getElementById('msgs-list');
+  if (!convos.length) {
+    const users = await api('/api/users');
+    let html = '<div class="empty"><div class="ei">💬</div><div class="et">No messages yet</div><div class="es">Tap someone\'s card to start a conversation.</div></div>';
+    if (users.length) {
+      html += '<div class="slbl">People on IRONnetWORK</div>';
+      users.slice(0, 8).forEach(u => {
+        const emoji = TRADE_EMOJIS[u.trade] || '⚒️';
+        const av = u.avatar ? `<img src="${u.avatar}">` : emoji;
+        html += `<div class="mi" onclick="openChat('${u.id}','${u.name}')"><div class="mi-av">${av}</div><div class="mi-cnt"><div class="mi-nm">${u.name}</div><div class="mi-pr">${emoji} ${u.trade} · ${u.location}</div></div><div style="color:var(--or);font-size:12px">→</div></div>`;
+      });
+    }
+    el.innerHTML = html; return;
+  }
+  el.innerHTML = convos.map(c => {
+    const u = c.other;
+    const emoji = TRADE_EMOJIS[u.trade] || '⚒️';
+    const av = u.avatar ? `<img src="${u.avatar}">` : emoji;
+    const ur = c.unread > 0 ? 'ur' : '';
+    const badge = c.unread > 0 ? `<span class="mi-ub">${c.unread}</span>` : '';
+    return `<div class="mi ${ur}" onclick="openChat('${u.id}','${u.name}')"><div class="mi-av">${av}</div><div class="mi-cnt"><div class="mi-nm">${u.name}</div><div class="mi-pr">${c.last_message?.content || ''}</div></div><div class="mi-ti"><span>${timeAgo(c.last_message?.created_at)}</span>${badge}</div></div>`;
+  }).join('');
+}
+
+async function openChat(userId, name) {
+  chatUserId = userId;
+  document.getElementById('chat-name').textContent = name;
+  nav('chat');
+  loadChat();
+}
+
+async function loadChat() {
+  const msgs = await api(`/api/messages/${chatUserId}`);
+  const el = document.getElementById('chat-msgs');
+  el.innerHTML = msgs.map(m => {
+    const mine = m.from_id === ME.id;
+    return `<div class="msg-bub ${mine?'msg-mine':'msg-other'}">${m.content}<div class="msg-time">${timeAgo(m.created_at)}</div></div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chat-inp');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  inp.value = '';
+  await api('/api/messages', { method: 'POST', body: { to_id: chatUserId, content: txt } });
+  loadChat();
+}
+
+// ═══════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════
+async function loadProfile() {
+  ME = await api('/api/me');
+  const vouches = await api(`/api/users/${ME.id}/vouches`);
+  const el = document.getElementById('profile-content');
+  const emoji = TRADE_EMOJIS[ME.trade] || '⚒️';
+  const av = ME.avatar ? `<img src="${ME.avatar}">` : emoji;
+  const ri = RANK_ICONS[ME.rank]; const rn = RANK_NAMES[ME.rank];
+  const avail = ME.available ? '<span style="color:var(--gr);font-weight:700">Open for Work</span>' : '<span style="color:var(--t3)">Not available</span>';
+
+  let vouchHtml = '';
+  const cats = [['🔧','Knows their trade'],['🕐','Shows up every day'],['🛡️','Safe worker'],['🤝','Good crew member'],['📐','Runs a clean job']];
+  cats.forEach(([icon, label]) => {
+    const v = vouches.vouches?.find(v => v.category === label);
+    vouchHtml += `<div class="vi"><span class="vi-i">${icon}</span><span class="vi-t">${label}</span><span class="vi-c">${v?.count||0}</span></div>`;
+  });
+
+  let certsHtml = ME.certs?.map(c => `<span class="cert ${c.expires?'cert-expiring':'cert-active'}">${c.expires?'⏰':'✅'} ${c.name}</span>`).join(' ') || '<span style="font-size:11px;color:var(--t3)">No certs added yet</span>';
+
+  let localsHtml = ME.locals?.map(l => `<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--c);border:1px solid var(--b);border-radius:50px;font-size:10px;font-weight:700;color:var(--t2);margin:2px">${l.emoji} ${l.name}</span>`).join('') || '';
+
+  el.innerHTML = `
+    <div class="pf-cov"><div class="pf-av">${av}</div></div>
+    <div class="pf-info">
+      <h2>${ME.name}</h2>
+      <div class="pf-tr">${emoji} ${ME.trade} · <span class="rank rank-${ME.rank}">${ri} ${rn}</span></div>
+      <div class="pf-lo">📍 ${ME.location||'Location not set'} · ${avail}</div>
+    </div>
+    <div class="pf-stats">
+      <div class="pf-s"><div class="pn">${ME.posts_count||0}</div><div class="pl">Drops</div></div>
+      <div class="pf-s"><div class="pn">${ME.years||'—'}</div><div class="pl">Years</div></div>
+      <div class="pf-s"><div class="pn">${vouches.total||0}</div><div class="pl">Vouches</div></div>
+    </div>
+    <div style="padding:0 16px 10px;display:flex;gap:6px">
+      <button class="btn bto" style="flex:1;font-size:11px;padding:9px" onclick="logout()">Log Out</button>
+    </div>
+    <div style="padding:0 16px 10px"><div class="slbl" style="padding:0 0 6px">🤝 Vouches (${vouches.total||0})</div>${vouchHtml}</div>
+    <div style="padding:0 16px 10px"><div class="slbl" style="padding:0 0 6px">🏅 Certifications</div><div style="display:flex;flex-wrap:wrap;gap:4px">${certsHtml}</div>
+      <div style="margin-top:8px"><input class="inp" id="new-cert" placeholder="Add cert (e.g. OSHA 30)" style="font-size:12px;padding:8px 10px" onkeydown="if(event.key==='Enter')addCert()"></div>
+    </div>
+    <div style="padding:0 16px 10px"><div class="slbl" style="padding:0 0 6px">⚒️ My Locals</div><div style="display:flex;flex-wrap:wrap;gap:4px">${localsHtml}</div></div>
+    <div style="height:20px"></div>
+  `;
+}
+
+async function addCert() {
+  const inp = document.getElementById('new-cert');
+  if (!inp.value.trim()) return;
+  await api('/api/me/certs', { method: 'POST', body: { name: inp.value.trim() } });
+  inp.value = '';
+  toast('🏅 Cert added');
+  loadProfile();
+}
+
+// ═══════════════════════════════════════
+// VIEW OTHER USER
+// ═══════════════════════════════════════
+async function viewUser(id) {
+  if (id === ME.id) { nav('profile'); return; }
+  const u = await api(`/api/users/${id}`);
+  const vouches = await api(`/api/users/${id}/vouches`);
+  if (!u || u.error) return toast('User not found');
+  const emoji = TRADE_EMOJIS[u.trade] || '⚒️';
+  const av = u.avatar ? `<img src="${u.avatar}">` : emoji;
+  const ri = RANK_ICONS[u.rank]; const rn = RANK_NAMES[u.rank];
+
+  const cats = [['🔧','Knows their trade'],['🕐','Shows up every day'],['🛡️','Safe worker'],['🤝','Good crew member'],['📐','Runs a clean job']];
+  let vouchBtns = cats.map(([icon, label]) => {
+    const v = vouches.vouches?.find(v => v.category === label);
+    return `<div class="vi" style="cursor:pointer" onclick="vouch('${id}','${label}',this)"><span class="vi-i">${icon}</span><span class="vi-t">${label}</span><span class="vi-c">${v?.count||0}</span></div>`;
+  }).join('');
+
+  const el = document.getElementById('user-content');
+  el.innerHTML = `
+    <div class="pf-cov"><div class="pf-av">${av}</div></div>
+    <div class="pf-info">
+      <h2>${u.name}</h2>
+      <div class="pf-tr">${emoji} ${u.trade} · <span class="rank rank-${u.rank}">${ri} ${rn}</span></div>
+      <div class="pf-lo">📍 ${u.location||''} · ${u.available?'<span style="color:var(--gr);font-weight:700">Open</span>':'<span style="color:var(--t3)">Booked</span>'}</div>
+    </div>
+    <div class="pf-stats">
+      <div class="pf-s"><div class="pn">${u.posts_count||0}</div><div class="pl">Drops</div></div>
+      <div class="pf-s"><div class="pn">${u.years||'—'}</div><div class="pl">Years</div></div>
+      <div class="pf-s"><div class="pn">${vouches.total||0}</div><div class="pl">Vouches</div></div>
+    </div>
+    <div style="padding:0 16px 8px;display:flex;gap:6px">
+      <button class="btn btn1" style="flex:1;font-size:12px;padding:10px" onclick="openChat('${u.id}','${u.name}')">💬 Message</button>
+    </div>
+    <div style="padding:0 16px 10px"><div class="slbl" style="padding:0 0 6px">🤝 Vouch for ${u.name.split(' ')[0]}</div>${vouchBtns}</div>
+  `;
+  document.getElementById('v-user').classList.add('on');
+}
+
+async function vouch(userId, category, el) {
+  await api(`/api/users/${userId}/vouch`, { method: 'POST', body: { category } });
+  toast('🤝 Vouch sent: "' + category + '"');
+  const cnt = el.querySelector('.vi-c');
+  cnt.textContent = parseInt(cnt.textContent) + 1;
+}
+
+// ═══════════════════════════════════════
+// COMPOSE
+// ═══════════════════════════════════════
+async function openCompose() {
+  document.getElementById('compose').classList.add('on');
+  const locals = await api('/api/locals');
+  const sel = document.getElementById('c-local');
+  sel.innerHTML = locals.filter(l => l.joined).map(l => `<option value="${l.id}">${l.emoji} ${l.name}</option>`).join('');
+  if (currentLocal) sel.value = currentLocal;
+}
+
+function closeCompose() { document.getElementById('compose').classList.remove('on'); }
+
+async function submitPost() {
+  const text = document.getElementById('c-text').value.trim();
+  const localId = document.getElementById('c-local').value;
+  const fileInput = document.getElementById('c-img');
+  if (!text) return toast('Write something first');
+  const fd = new FormData();
+  fd.append('content', text);
+  fd.append('local_id', localId);
+  if (fileInput.files[0]) fd.append('image', fileInput.files[0]);
+  await api('/api/posts', { method: 'POST', body: fd });
+  document.getElementById('c-text').value = '';
+  fileInput.value = '';
+  closeCompose();
+  toast('✅ Dropped. 🔥');
+  if (currentLocal) loadLocalDetail(currentLocal);
+  else loadYard();
+}
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+function timeAgo(d) {
+  if (!d) return '';
+  const s = Math.floor((Date.now() - new Date(d + 'Z').getTime()) / 1000);
+  if (s < 60) return 'now';
+  if (s < 3600) return Math.floor(s / 60) + 'm';
+  if (s < 86400) return Math.floor(s / 3600) + 'h';
+  return Math.floor(s / 86400) + 'd';
+}
+
+let toastTimer;
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+async function initApp() {
+  if (!TOKEN) { nav('auth'); return; }
+  try {
+    ME = await api('/api/me');
+    if (ME.error) { TOKEN = ''; localStorage.removeItem('inw_token'); nav('auth'); return; }
+    nav('yard');
+  } catch(e) { nav('auth'); }
+}
+
+initApp();
+</script>
+</body>
+</html>
